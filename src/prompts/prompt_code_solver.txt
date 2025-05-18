@@ -1,0 +1,12 @@
+You will be given a competitive programming problem. Please reason step by step about the solution, then write detailed pseudocode to uncover any potential logical errors or omissions, and finally provide a complete implementation in C++17.
+
+Your solution must read input from standard input (cin), write output to standard output (cout).
+Do not include any debug prints or additional output.
+
+Put your final solution within a single code block:
+```cpp
+<your code here>
+```
+
+Question:
+{question}

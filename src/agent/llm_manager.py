@@ -27,7 +27,7 @@ class LLMManager:
     generation_config.top_k = 50
     generation_config.max_new_tokens = 1024
 
-    code-pipeline = pipeline(
+    code_pipeline = pipeline(
         "text-generation",
         model=model,
         tokenizer=tokenizer,
@@ -36,10 +36,5 @@ class LLMManager:
 
     def __init__(self):
         self.llm = HuggingFacePipeline(
-            pipeline=self.code-pipeline
+            pipeline=self.code_pipeline
         )
-    
-    def invoke(self, prompt: PromptTemplate, **kwargs  ) -> str:
-        messages = prompt.format_messages(**kwargs)
-        response = self.llm.invoke(messages)
-        return response.content
