@@ -8,5 +8,4 @@ Put your final solution within a single code block:
 <your code here>
 ```
 
-Question:
-{question}
+{messages}

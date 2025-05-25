@@ -15,14 +15,23 @@ class writeCpp(BaseModel):
     code: str = Field(..., description="Valid C++14 code to solve the task.")
 
 def code_solver(state: GraphState):
-    question = state['question']
+    inputs = {"messages": state['messages']}
+    has_examples = 'examples' in state and state['examples'] is not None
+    output_key = "messages" if has_examples else "candidate"
+
+    if has_examples:
+        inputs['examples'] = state['examples']
 
     prompt = PromptTemplate.from_file('../prompts/prompt_code_solver.txt')
     llm = llm_manager.llm
 
     runnable = prompt | llm.bind_tools([writeCpp])
-    code = runnable.invoke({"question": question})
-    return {"code": code, "messages": [AIMessage(code)]}
+    output = runnable.invoke({"messages": inputs})
+
+    if not output.content:
+        return {"messages": [AIMessage(content="Hmmm, I will need to think about this step by step.")]}
+
+    return {output_key: output}
 
 def format_tool_message(response: str, ai_message: AIMessage):
     return ToolMessage(
