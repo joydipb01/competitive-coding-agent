@@ -3,6 +3,7 @@ from state import GraphState
 from llm_manager import LLMManager
 from langchain_core.prompts import PromptTemplate
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+from langchain_core.runnables import RunnableConfig
 
 from test_eval_utils import check_correctness
 
@@ -79,3 +80,28 @@ def evaluate(state: GraphState):
     response = f"Incorrect submission. Please respond with updated code.\nPass rate: {success_rate}\nResults:\n{responses}"
     formatted_message = format_tool_message(response, ai_message)
     return {"messages": [formatted_message]}
+
+def retrieve_examples(state: GraphState, config: RunnableConfig):
+    top_k = config["configurable"].get("k") or 2
+    ai_message: AIMessage = state['candidate']
+    if not ai_message.tool_calls:
+        raise
+            ValueError(
+                content="No code submitted. Please try again using the correct C++14 code."
+            )
+    code = ai_message.tool_calls[0]['args']['code']
+    examples = "\n".join(
+        [doc.page_content for doc in llm_manager.retriever.invoke(code)[:top_k]]
+    )
+
+    examples_prompt = f"""
+    You previously solved the following problems:
+    <examples>
+    {examples}
+    </examples>
+    Approach the current problem using the similar style and techniques as the examples above.
+    """
+
+    return {
+        "examples": examples_prompt
+    }

@@ -2,6 +2,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_huggingface.llms import HuggingFacePipeline
 from transformers import AutoModelForCausalLM, GenerationConfig, pipeline, AutoTokenizer
 import torch
+from langchain_community import BM25Retriever
 
 class LLMManager:
 
@@ -34,7 +35,16 @@ class LLMManager:
         generation_config=generation_config,
     )
 
-    def __init__(self):
+    def __init__(self, train_df):
         self.llm = HuggingFacePipeline(
             pipeline=self.code_pipeline
+        )
+
+        self.retriever = BM25Retriever.from_texts(
+            [f"""<problem>
+            {row["description"]}
+            </problem>
+            <solution>
+            {row["solution"]}
+            </solution>""" for _, row in train_df.iterrows()]
         )
