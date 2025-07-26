@@ -26,4 +26,4 @@ builder.add_conditional_edge("solver", control_from_solver, {"evaluate": "evalua
 builder.add_conditional_edge("evaluate", control_end, {END: END, "solver": "solver"})
 
 checkpoint = MemorySaver()
-graph = builder.compile(checkpoint=checkpoint)
+graph = builder.compile(checkpoint=checkpoint, interrupt_after=["evaluate"])
