@@ -6,7 +6,7 @@ from langchain_community import BM25Retriever
 
 class LLMManager:
 
-    MODEL_NAME = "anonymous4chan/llama-2-7b"
+    MODEL_NAME = "NousResearch/Hermes-3-Llama-3.1-8B"
 
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_NAME,
